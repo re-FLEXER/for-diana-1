@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter I — For Diana</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Фоновий Canvas для дерева та сердечок -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- БЛОК 1: КОДОВИЙ ЗАМОК -->
+    <section id="lock-screen" class="screen active">
+        <div class="lock-card">
+            <div class="sparkle-icon">✨</div>
+            <h2>Цей спогад закрито словом</h2>
+            <p class="hint-question">Де ми познайомилися?</p>
+            
+            <form id="lock-form" onsubmit="return false;">
+                <input 
+                    type="text" 
+                    id="answer-input" 
+                    placeholder="Введи відповідь..." 
+                    autocomplete="off" 
+                    autofocus
+                >
+                <button type="submit" id="unlock-btn">Відкрити 🤍</button>
+            </form>
+            
+            <p id="error-msg" class="error-msg"></p>
+        </div>
+    </section>
+
+    <!-- БЛОК 2: КОНВЕРТ ТА ЛИСТ -->
+    <section id="letter-screen" class="screen hidden">
+        <div class="envelope-wrapper">
+            <!-- КОНВЕРТ -->
+            <div class="envelope" id="envelope">
+                <div class="envelope-back"></div>
+                <div class="envelope-front"></div>
+                <div class="envelope-top"></div>
+                
+                <div class="wax-seal" id="open-envelope-btn">
+                    <span>❤️</span>
+                    <p class="seal-text">Відкрити</p>
+                </div>
+            </div>
+
+            <!-- ЛИСТ -->
+            <div class="letter" id="letter">
+                <div class="letter-content">
+                    <div class="letter-header">
+                        <span class="heart-badge">💖</span>
+                        <h3 class="letter-title">Лист для Діани</h3>
+                    </div>
+                    
+                    <p class="letter-text">
+                        Сьогодні наша перша міні-річниця — цілий місяць, проведений пліч-о-пліч. Так, можливо, це не якесь глобальне свято, і воно не хайлайтиться червоним у календарі, але для мене цей день дуже цінний.
+                        <br><br>
+                        Хочу, щоб ти ні на секунду не сумнівалася: ти в мене найкраща дівчинка на світі. І що б там не було, я впевнений у тобі так, як не був впевнений ще ніколи в житті. Дякую тобі за ті безсонні ночі, які ти проводила зі мною на нічних змінах. За твої круті уроки, за підтримку, за прогулянки холодними вечорами і за кожну випиту разом каву та чай. Твої обійми — найщиріші з усіх, що я коли-небудь відчував.
+                        <br><br>
+                        Я безмежно ціную кожне твоє повідомлення з «Добрим ранком» (ну і, звісно, не забуваємо про «Надобраніч» 😉). Дякую, що впустила мене у свій світ і приділяєш мені стільки уваги. Я все це помічаю. Іноді я ночами не висипаюся просто тому, що думаю про наше з тобою майбутнє і про те, наскільки ти робиш мене щасливим.
+                        <br><br>
+                        А особливо мені приємно, як ти уважно слухаєш мої історії по роботі та розробці, навіть якщо іноді в цьому не дуже розбираєшся. І я ніколи не забуду нашу першу катку в КС (визнаймо, ти граєш набагато краще за Юру).
+                        <br><br>
+                        Я знаю, що попереду в нас ще довгий шлях, і жодні дрібні конфлікти чи сторонні люди не стануть нам на заваді. У нас ще занадто багато планів: нам треба обов'язково зірвати голос на концерті Макса Коржа і покататися нічним містом на тому самому Dodge Challenger (який я просто люблю, бо кохаю я тільки тебе). А ще попереду твій великий старт — університети Чехії вже чекають на тебе, і я абсолютно впевнений, що в тебе все вийде. А я, зі свого боку, прикладу максимум зусиль, щоб на цьому шляху ти завжди відчувала себе найщасливішою поруч зі мною.
+                        <br><br>
+                        Дякую, що приймаєш мої міні-подарунки. Дякую, що ти в мене є. Я тебе дуже сильно кохаю, моя queen Diana
+                    </p>
+
+                    <!-- Polaroid картка -->
+                    <div class="polaroid-card">
+                        <div class="polaroid-img-wrapper">
+                            <img src="assets/111.jpg" alt="Наше фото" id="letter-img">
+                        </div>
+                        <p class="polaroid-caption">05.09.2026 ✨</p>
+                    </div>
+
+                    <!-- Кнопка перехода -->
+                    <button id="to-spidey-btn" class="next-stage-btn">
+                        <span>Продовжити квест</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- БЛОК 3: SPIDER-MAN СЦЕНА -->
+    <section id="spidey-screen" class="screen hidden">
+        <div class="spidey-placeholder">
+            <h2>Блок Spider-Man скоро з'явиться 🕸️️</h2>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
