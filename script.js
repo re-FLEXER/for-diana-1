@@ -1,165 +1,213 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Елементи екранів
     const lockForm = document.getElementById('lock-form');
     const answerInput = document.getElementById('answer-input');
     const errorMsg = document.getElementById('error-msg');
     const lockScreen = document.getElementById('lock-screen');
-
     const letterScreen = document.getElementById('letter-screen');
     const envelope = document.getElementById('envelope');
     const openEnvelopeBtn = document.getElementById('open-envelope-btn');
     const envelopeWrapper = document.querySelector('.envelope-wrapper');
     const toSpideyBtn = document.getElementById('to-spidey-btn');
-
     const spideyScreen = document.getElementById('spidey-screen');
     const plannerScreen = document.getElementById('planner-screen');
     const toBlock4Btn = document.getElementById('to-block-4-btn');
-
     const bgCanvas = document.getElementById('bg-canvas');
     const ctx = bgCanvas ? bgCanvas.getContext('2d') : null;
+    const plannerForm = document.getElementById('planner-form');
+    const ticketWrapper = document.getElementById('ticket-wrapper');
+    const generateTicketBtn = document.getElementById('generate-ticket-btn');
+    const downloadTicketBtn = document.getElementById('download-ticket-btn');
+    const ticketCard = document.getElementById('ticket-result');
+    const ticketStatus = document.getElementById('ticket-status');
+    const webCanvas = document.getElementById('spidey-web-canvas');
+    const plannerCanvas = document.getElementById('planner-bg-canvas');
+    let webCtx = webCanvas ? webCanvas.getContext('2d') : null;
+    let plannerCtx = plannerCanvas ? plannerCanvas.getContext('2d') : null;
 
     const validKeywords = [
-        'зал', 'спортзал', 'gym', 'active', 'актив', 
+        'зал', 'спортзал', 'gym', 'active', 'актив',
         'active pro', 'актив про', 'активпро', 'activepro',
-        'качалка', 'качалці', 'тренажерка', 'тренажерці', 
-        'тренажерний', 'треніровка', 'тренування', 'спорт', 
+        'качалка', 'качалці', 'тренажерка', 'тренажерці',
+        'тренажерний', 'треніровка', 'тренування', 'спорт',
         'fitness', 'fit'
     ];
 
-    // 1. КОДОВИЙ ЗАМОК
-    if (lockForm) {
-        lockForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const rawInput = answerInput.value;
+    const setStatus = (node, message, isError = false) => {
+        if (!node) return;
+        node.textContent = message;
+        node.style.color = isError ? '#ff6b81' : '#4cd137';
+    };
+
+    const setScreen = (activeScreen) => {
+        const screens = [lockScreen, letterScreen, spideyScreen, plannerScreen].filter(Boolean);
+
+        screens.forEach((screen) => {
+            const isActive = screen === activeScreen;
+            screen.classList.toggle('active', isActive);
+            screen.classList.toggle('hidden', !isActive);
+            screen.setAttribute('aria-hidden', String(!isActive));
+        });
+
+        if (bgCanvas) {
+            const shouldShowBg = activeScreen === lockScreen || activeScreen === letterScreen;
+            bgCanvas.classList.toggle('active', shouldShowBg);
+        }
+    };
+
+    if (lockForm && answerInput && errorMsg && lockScreen && letterScreen) {
+        lockForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const rawInput = answerInput.value ?? '';
             const normalizedInput = rawInput
                 .toLowerCase()
                 .trim()
-                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
 
-            const isCorrect = validKeywords.some(keyword => normalizedInput.includes(keyword));
+            const isCorrect = validKeywords.some((keyword) => normalizedInput.includes(keyword));
 
             if (isCorrect) {
-                errorMsg.style.color = '#4cd137';
-                errorMsg.textContent = 'Правильно! Відкриваю... ✨';
-                
-                setTimeout(() => {
-                    lockScreen.classList.remove('active');
-                    lockScreen.classList.add('hidden');
-                    
-                    letterScreen.classList.remove('hidden');
-                    letterScreen.classList.add('active');
+                setStatus(errorMsg, 'Правильно! Відкриваю... ✨', false);
 
+                setTimeout(() => {
+                    setScreen(letterScreen);
                     resizeCanvas();
-                    bgCanvas.classList.add('active');
                 }, 800);
             } else {
-                errorMsg.style.color = '#ff6b81';
-                errorMsg.textContent = 'Хмм, здається, це було в іншому місці... Подумай ще 😉';
-                
+                setStatus(errorMsg, 'Хмм, здається, це було в іншому місці... Подумай ще 😉', true);
                 answerInput.style.transform = 'translateX(-5px)';
-                setTimeout(() => answerInput.style.transform = 'translateX(5px)', 100);
-                setTimeout(() => answerInput.style.transform = 'translateX(0)', 200);
+                setTimeout(() => {
+                    answerInput.style.transform = 'translateX(5px)';
+                }, 100);
+                setTimeout(() => {
+                    answerInput.style.transform = 'translateX(0)';
+                }, 200);
             }
         });
     }
 
-    // 2. ВІДКРИТТЯ КОНВЕРТА
     const openEnvelope = () => {
-        if (envelope && !envelope.classList.contains('open')) {
-            envelope.classList.add('open');
+        if (!envelope || envelope.classList.contains('open')) return;
+        envelope.classList.add('open');
+        if (envelopeWrapper) {
             setTimeout(() => {
                 envelopeWrapper.classList.add('opened');
             }, 300);
         }
     };
 
-    if (openEnvelopeBtn) openEnvelopeBtn.addEventListener('click', (e) => { e.stopPropagation(); openEnvelope(); });
-    if (envelope) envelope.addEventListener('click', openEnvelope);
+    if (openEnvelopeBtn) {
+        openEnvelopeBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            openEnvelope();
+        });
+    }
 
-    // 3. ПЕРЕХІД ДО SPIDER-MAN (БЛОК 3)
-    if (toSpideyBtn) {
-        toSpideyBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            letterScreen.classList.remove('active');
-            letterScreen.classList.add('hidden');
-            if (bgCanvas) bgCanvas.classList.remove('active');
+    if (envelope) {
+        envelope.addEventListener('click', openEnvelope);
+    }
 
-            spideyScreen.classList.remove('hidden');
-            spideyScreen.classList.add('active');
-
+    if (toSpideyBtn && letterScreen && spideyScreen) {
+        toSpideyBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            setScreen(spideyScreen);
             resizeWebCanvas();
         });
     }
 
-    // 4. ПЕРЕХІД З БЛОКУ 3 НА БЛОК 4 (ПЛАНУВАЛЬНИК)
-    if (toBlock4Btn) {
-        toBlock4Btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            spideyScreen.classList.remove('active');
-            spideyScreen.classList.add('hidden');
-
-            plannerScreen.classList.remove('hidden');
-            plannerScreen.classList.add('active');
-
+    if (toBlock4Btn && spideyScreen && plannerScreen) {
+        toBlock4Btn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            setScreen(plannerScreen);
             resizePlannerCanvas();
         });
     }
 
-    // 5. ГЕНЕРАЦІЯ КВИТКА У БЛОЦІ 4
-    const generateTicketBtn = document.getElementById('generate-ticket-btn');
-    const plannerForm = document.getElementById('planner-form');
-    const ticketWrapper = document.getElementById('ticket-wrapper');
-
-    if (generateTicketBtn) {
+    if (generateTicketBtn && plannerForm && ticketWrapper) {
         generateTicketBtn.addEventListener('click', () => {
-            const selectedLocation = document.querySelector('input[name="location"]:checked')?.value;
-            const selectedFood = document.querySelector('input[name="food"]:checked')?.value;
+            const selectedLocation = document.querySelector('input[name="location"]:checked')?.value ?? '—';
+            const selectedFood = document.querySelector('input[name="food"]:checked')?.value ?? '—';
+            const resultLocation = document.getElementById('res-location');
+            const resultFood = document.getElementById('res-food');
 
-            document.getElementById('res-location').textContent = selectedLocation;
-            document.getElementById('res-food').textContent = selectedFood;
+            if (resultLocation) resultLocation.textContent = selectedLocation;
+            if (resultFood) resultFood.textContent = selectedFood;
 
             plannerForm.classList.add('hidden');
+            plannerForm.setAttribute('aria-hidden', 'true');
             ticketWrapper.classList.remove('hidden');
+            ticketWrapper.setAttribute('aria-hidden', 'false');
         });
     }
 
-    // 6. СКАНУВАННЯ КВИТКА ЯК КАРТИНКИ (html2canvas)
-    const downloadTicketBtn = document.getElementById('download-ticket-btn');
-    const ticketCard = document.getElementById('ticket-result');
-
     if (downloadTicketBtn && ticketCard) {
-        downloadTicketBtn.addEventListener('click', () => {
-            html2canvas(ticketCard, {
-                backgroundColor: '#100a18',
-                scale: 2
-            }).then(canvas => {
+        downloadTicketBtn.addEventListener('click', async () => {
+            if (typeof window.html2canvas !== 'function') {
+                if (ticketStatus) {
+                    setStatus(ticketStatus, 'Експорт квитка тимчасово недоступний.', true);
+                }
+                return;
+            }
+
+            try {
+                if (document.fonts && document.fonts.ready) {
+                    await document.fonts.ready;
+                }
+
+                const canvas = await window.html2canvas(ticketCard, {
+                    backgroundColor: '#100a18',
+                    scale: Math.min(window.devicePixelRatio || 1, 2)
+                });
+
+                if (ticketStatus) {
+                    setStatus(ticketStatus, 'Квиток збережено.', false);
+                }
+
                 const link = document.createElement('a');
                 link.download = 'Date-Ticket-Diana.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-            }).catch(err => {
-                console.error('Помилка збереження:', err);
-            });
+            } catch (error) {
+                console.error('Помилка збереження:', error);
+                if (ticketStatus) {
+                    setStatus(ticketStatus, 'Не вдалося зберегти квиток. Спробуйте ще раз.', true);
+                }
+            }
         });
     }
 
-    // 7. CANVAS: ДЕРЕВО ТА СЕРДЕЧКА (БЛОКИ 1 і 2)
-    let width, height;
+    let width = 0;
+    let height = 0;
+
     function resizeCanvas() {
-        if (!bgCanvas) return;
-        width = bgCanvas.width = window.innerWidth;
-        height = bgCanvas.height = window.innerHeight;
+        if (!bgCanvas || !ctx) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = bgCanvas.getBoundingClientRect();
+        width = rect.width || window.innerWidth;
+        height = rect.height || window.innerHeight;
+
+        bgCanvas.width = Math.round(width * dpr);
+        bgCanvas.height = Math.round(height * dpr);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
     }
 
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        resizeWebCanvas();
+        resizePlannerCanvas();
+    });
+
     resizeCanvas();
 
     const hearts = [];
     const heartCount = 40;
 
     class HeartLeaf {
-        constructor() { this.reset(true); }
+        constructor() {
+            this.reset(true);
+        }
+
         reset(initial = false) {
             this.x = initial ? Math.random() * width : width * 0.4 + Math.random() * (width * 0.6);
             this.y = initial ? Math.random() * height : -20;
@@ -172,12 +220,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const colors = ['#e66496', '#f7d6e0', '#bd4870', '#e26992', '#ffffff'];
             this.color = colors[Math.floor(Math.random() * colors.length)];
         }
+
         update() {
             this.y += this.speedY;
             this.x += this.speedX + Math.sin(this.y * 0.01) * 0.5;
             this.rotation += this.rotSpeed;
             if (this.y > height + 20 || this.x < -20) this.reset();
         }
+
         draw() {
             if (!ctx) return;
             ctx.save();
@@ -231,41 +281,53 @@ document.addEventListener('DOMContentLoaded', () => {
         drawBranch(treeBaseX, treeBaseY, height * 0.24, -15, 8);
     }
 
-    for (let i = 0; i < heartCount; i++) hearts.push(new HeartLeaf());
+    for (let i = 0; i < heartCount; i += 1) {
+        hearts.push(new HeartLeaf());
+    }
 
     function animateBackground() {
-        if (ctx && letterScreen && !letterScreen.classList.contains('hidden')) {
-            ctx.clearRect(0, 0, width, height);
-            drawFullTree();
-            hearts.forEach(heart => { heart.update(); heart.draw(); });
+        if (!ctx || !letterScreen || letterScreen.classList.contains('hidden') || document.hidden) {
+            requestAnimationFrame(animateBackground);
+            return;
         }
+
+        ctx.clearRect(0, 0, width, height);
+        drawFullTree();
+        hearts.forEach((heart) => {
+            heart.update();
+            heart.draw();
+        });
+
         requestAnimationFrame(animateBackground);
     }
+
     animateBackground();
 
-    // ==========================================
-    // 8. SPIDER-MAN ANIMATED WEB CANVAS (БЛОК 3)
-    // ==========================================
-    const webCanvas = document.getElementById('spidey-web-canvas');
-    let webCtx = webCanvas ? webCanvas.getContext('2d') : null;
-    let webWidth, webHeight;
+    let webWidth = 0;
+    let webHeight = 0;
     let nodes = [];
     const nodeCount = 55;
     const maxDistance = 160;
     const mouse = { x: null, y: null, radius: 180 };
 
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
     });
 
     function resizeWebCanvas() {
-        if (!webCanvas) return;
-        webWidth = webCanvas.width = window.innerWidth;
-        webHeight = webCanvas.height = window.innerHeight;
+        if (!webCanvas || !webCtx) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = webCanvas.getBoundingClientRect();
+        webWidth = rect.width || window.innerWidth;
+        webHeight = rect.height || window.innerHeight;
+
+        webCanvas.width = Math.round(webWidth * dpr);
+        webCanvas.height = Math.round(webHeight * dpr);
+        webCtx.setTransform(1, 0, 0, 1, 0, 0);
+        webCtx.scale(dpr, dpr);
     }
 
-    window.addEventListener('resize', resizeWebCanvas);
     resizeWebCanvas();
 
     class WebNode {
@@ -286,11 +348,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.y < 0 || this.y > webHeight) this.vy *= -1;
 
             if (mouse.x !== null && mouse.y !== null) {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let dist = Math.sqrt(dx * dx + dy * dy);
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
                 if (dist < mouse.radius) {
-                    let force = (mouse.radius - dist) / mouse.radius;
+                    const force = (mouse.radius - dist) / mouse.radius;
                     this.x -= (dx / dist) * force * 2.5;
                     this.y -= (dy / dist) * force * 2.5;
                 }
@@ -310,57 +372,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    for (let i = 0; i < nodeCount; i++) {
+    for (let i = 0; i < nodeCount; i += 1) {
         nodes.push(new WebNode());
     }
 
     function animateSpideyWeb() {
-        if (webCtx && spideyScreen && !spideyScreen.classList.contains('hidden')) {
-            webCtx.clearRect(0, 0, webWidth, webHeight);
+        if (!webCtx || !spideyScreen || spideyScreen.classList.contains('hidden') || document.hidden) {
+            requestAnimationFrame(animateSpideyWeb);
+            return;
+        }
 
-            for (let i = 0; i < nodes.length; i++) {
-                nodes[i].update();
-                nodes[i].draw();
+        webCtx.clearRect(0, 0, webWidth, webHeight);
 
-                for (let j = i + 1; j < nodes.length; j++) {
-                    let dx = nodes[i].x - nodes[j].x;
-                    let dy = nodes[i].y - nodes[j].y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
+        for (let i = 0; i < nodes.length; i += 1) {
+            nodes[i].update();
+            nodes[i].draw();
 
-                    if (dist < maxDistance) {
-                        let opacity = (1 - dist / maxDistance) * 0.45;
-                        webCtx.save();
-                        webCtx.beginPath();
-                        webCtx.moveTo(nodes[i].x, nodes[i].y);
-                        webCtx.lineTo(nodes[j].x, nodes[j].y);
-                        webCtx.strokeStyle = `rgba(255, 42, 95, ${opacity})`;
-                        webCtx.lineWidth = 0.8;
-                        webCtx.stroke();
-                        webCtx.restore();
-                    }
+            for (let j = i + 1; j < nodes.length; j += 1) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < maxDistance) {
+                    const opacity = (1 - dist / maxDistance) * 0.45;
+                    webCtx.save();
+                    webCtx.beginPath();
+                    webCtx.moveTo(nodes[i].x, nodes[i].y);
+                    webCtx.lineTo(nodes[j].x, nodes[j].y);
+                    webCtx.strokeStyle = `rgba(255, 42, 95, ${opacity})`;
+                    webCtx.lineWidth = 0.8;
+                    webCtx.stroke();
+                    webCtx.restore();
                 }
             }
         }
+
         requestAnimationFrame(animateSpideyWeb);
     }
 
     animateSpideyWeb();
 
-    // ==========================================
-    // 9. PLANNER BACKGROUND PARTICLES (БЛОК 4)
-    // ==========================================
-    const plannerCanvas = document.getElementById('planner-bg-canvas');
-    let plannerCtx = plannerCanvas ? plannerCanvas.getContext('2d') : null;
-    let pWidth, pHeight;
+    let pWidth = 0;
+    let pHeight = 0;
     let stars = [];
 
     function resizePlannerCanvas() {
-        if (!plannerCanvas) return;
-        pWidth = plannerCanvas.width = window.innerWidth;
-        pHeight = plannerCanvas.height = window.innerHeight;
+        if (!plannerCanvas || !plannerCtx) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = plannerCanvas.getBoundingClientRect();
+        pWidth = rect.width || window.innerWidth;
+        pHeight = rect.height || window.innerHeight;
+
+        plannerCanvas.width = Math.round(pWidth * dpr);
+        plannerCanvas.height = Math.round(pHeight * dpr);
+        plannerCtx.setTransform(1, 0, 0, 1, 0, 0);
+        plannerCtx.scale(dpr, dpr);
     }
 
-    window.addEventListener('resize', resizePlannerCanvas);
     resizePlannerCanvas();
 
     class StarParticle {
@@ -392,13 +460,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    for (let i = 0; i < 70; i++) stars.push(new StarParticle());
+    for (let i = 0; i < 70; i += 1) {
+        stars.push(new StarParticle());
+    }
 
     function animatePlannerBg() {
-        if (plannerCtx && plannerScreen && !plannerScreen.classList.contains('hidden')) {
-            plannerCtx.clearRect(0, 0, pWidth, pHeight);
-            stars.forEach(star => { star.update(); star.draw(); });
+        if (!plannerCtx || !plannerScreen || plannerScreen.classList.contains('hidden') || document.hidden) {
+            requestAnimationFrame(animatePlannerBg);
+            return;
         }
+
+        plannerCtx.clearRect(0, 0, pWidth, pHeight);
+        stars.forEach((star) => {
+            star.update();
+            star.draw();
+        });
+
         requestAnimationFrame(animatePlannerBg);
     }
 

@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Chapter I — For Diana</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,32 +12,33 @@
 <body>
 
     <!-- Фоновий Canvas для дерева та сердечок -->
-    <canvas id="bg-canvas"></canvas>
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
     <!-- БЛОК 1: КОДОВИЙ ЗАМОК -->
-    <section id="lock-screen" class="screen active">
+    <section id="lock-screen" class="screen active" aria-hidden="false">
         <div class="lock-card">
             <div class="sparkle-icon">✨</div>
             <h2>Цей спогад закрито словом</h2>
             <p class="hint-question">Де ми познайомилися?</p>
             
-            <form id="lock-form" onsubmit="return false;">
+            <form id="lock-form">
+                <label class="sr-only" for="answer-input">Відповідь на запитання</label>
                 <input 
                     type="text" 
                     id="answer-input" 
                     placeholder="Введи відповідь..." 
                     autocomplete="off" 
-                    autofocus
+                    aria-describedby="error-msg"
                 >
                 <button type="submit" id="unlock-btn">Відкрити 🤍</button>
             </form>
             
-            <p id="error-msg" class="error-msg"></p>
+            <p id="error-msg" class="error-msg" role="status" aria-live="polite"></p>
         </div>
     </section>
 
     <!-- БЛОК 2: КОНВЕРТ ТА ЛИСТ -->
-    <section id="letter-screen" class="screen hidden">
+    <section id="letter-screen" class="screen hidden" aria-hidden="true">
         <div class="envelope-wrapper">
             <!-- КОНВЕРТ -->
             <div class="envelope" id="envelope">
@@ -45,10 +46,10 @@
                 <div class="envelope-front"></div>
                 <div class="envelope-top"></div>
                 
-                <div class="wax-seal" id="open-envelope-btn">
+                <button type="button" class="wax-seal" id="open-envelope-btn" aria-label="Відкрити конверт">
                     <span>❤️</span>
-                    <p class="seal-text">Відкрити</p>
-                </div>
+                    <span class="seal-text">Відкрити</span>
+                </button>
             </div>
 
             <!-- ЛИСТ -->
@@ -91,8 +92,8 @@
     </section>
 
     <!-- БЛОК 3: SPIDER-MAN СЦЕНА -->
-    <section id="spidey-screen" class="screen hidden">
-        <canvas id="spidey-web-canvas"></canvas>
+    <section id="spidey-screen" class="screen hidden" aria-hidden="true">
+        <canvas id="spidey-web-canvas" aria-hidden="true"></canvas>
         <div class="spidey-card">
             <div class="spidey-badge">
                 <span class="web-icon">🕷️</span>
@@ -136,8 +137,8 @@
     </section>
 
     <!-- БЛОК 4: ПЛАНУВАЛЬНИК ПОБАЧЕННЯ -->
-    <section id="planner-screen" class="screen hidden">
-        <canvas id="planner-bg-canvas"></canvas>
+    <section id="planner-screen" class="screen hidden" aria-hidden="true">
+        <canvas id="planner-bg-canvas" aria-hidden="true"></canvas>
         <div class="planner-card">
             <div class="planner-header">
                 <span class="planner-badge">Chapter IV — Date Night 🥂</span>
@@ -147,8 +148,8 @@
 
             <!-- Форма вибору варіантів -->
             <form id="planner-form">
-                <div class="planner-group">
-                    <label class="group-label">1. Де проведемо час?</label>
+                <fieldset class="planner-group">
+                    <legend class="group-label">1. Де проведемо час?</legend>
                     <div class="options-grid">
                         <label class="option-card">
                             <input type="radio" name="location" value="Затишний ресторан 🍷" checked>
@@ -172,10 +173,10 @@
                             </div>
                         </label>
                     </div>
-                </div>
+                </fieldset>
 
-                <div class="planner-group">
-                    <label class="group-label">2. Що будемо смакувати?</label>
+                <fieldset class="planner-group">
+                    <legend class="group-label">2. Що будемо смакувати?</legend>
                     <div class="options-grid">
                         <label class="option-card">
                             <input type="radio" name="food" value="Суші сет 🍣" checked>
@@ -199,7 +200,7 @@
                             </div>
                         </label>
                     </div>
-                </div>
+                </fieldset>
 
                 <button type="button" id="generate-ticket-btn" class="spidey-btn margin-top">
                     <span>Згенерувати квиток 🎟️</span>
@@ -226,9 +227,10 @@
                 </div>
 
                 <div class="ticket-actions">
-                    <button id="download-ticket-btn" class="spidey-btn download-btn">
+                    <button type="button" id="download-ticket-btn" class="spidey-btn download-btn">
                         <span>Зберегти квиток у галерею 📸</span>
                     </button>
+                    <p id="ticket-status" role="status" aria-live="polite"></p>
                 </div>
             </div>
         </div>
