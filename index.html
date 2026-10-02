@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chapter I — For Diana</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,11 +92,149 @@
 
     <!-- БЛОК 3: SPIDER-MAN СЦЕНА -->
     <section id="spidey-screen" class="screen hidden">
-        <div class="spidey-placeholder">
-            <h2>Блок Spider-Man скоро з'явиться 🕸️️</h2>
+        <canvas id="spidey-web-canvas"></canvas>
+        <div class="spidey-card">
+            <div class="spidey-badge">
+                <span class="web-icon">🕷️</span>
+                <span>Our Amazing Moment</span>
+                <span class="web-icon">🕸️</span>
+            </div>
+
+            <h2 class="spidey-title">You are my Gwen Stacy ❤️</h2>
+            <p class="spidey-subtitle">
+                «Коли світ навколо божеволіє, твої обійми — моє єдине безпечне місце»
+                <span class="spidey-author">— Your Spider-Man 🕷️</span>
+            </p>
+
+            <!-- АДАПТИВНИЙ ВІДЕОПЛЕЄР -->
+            <div class="video-frame-wrapper">
+                <div class="video-corner top-left"></div>
+                <div class="video-corner top-right"></div>
+                <div class="video-corner bottom-left"></div>
+                <div class="video-corner bottom-right"></div>
+
+                <div class="video-container">
+                    <video id="spidey-video" controls playsinline preload="metadata">
+                        <source src="" type="video/mp4">
+                        Твій браузер не підтримує відео.
+                    </video>
+
+                    <div id="video-placeholder" class="video-placeholder">
+                        <div class="play-glow-btn">
+                            <span class="play-icon">▶</span>
+                        </div>
+                        <p class="placeholder-title">Спеціальний мова-кліп</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопка переходу на Блок 4 -->
+            <button id="to-block-4-btn" class="spidey-btn">
+                <span>Продовжити нашу історію ✨</span>
+            </button>
         </div>
     </section>
 
+    <!-- БЛОК 4: ПЛАНУВАЛЬНИК ПОБАЧЕННЯ -->
+    <section id="planner-screen" class="screen hidden">
+        <canvas id="planner-bg-canvas"></canvas>
+        <div class="planner-card">
+            <div class="planner-header">
+                <span class="planner-badge">Chapter IV — Date Night 🥂</span>
+                <h2 class="planner-title">Сплануємо нашу річницу? ✨</h2>
+                <p class="planner-subtitle">Обери варіанти, які тобі найбільше до душі, і сформуй наш квиток:</p>
+            </div>
+
+            <!-- Форма вибору варіантів -->
+            <form id="planner-form">
+                <div class="planner-group">
+                    <label class="group-label">1. Де проведемо час?</label>
+                    <div class="options-grid">
+                        <label class="option-card">
+                            <input type="radio" name="location" value="Затишний ресторан 🍷" checked>
+                            <div class="option-content">
+                                <span class="option-icon">🥂</span>
+                                <span class="option-title">Ресторан / Кафе</span>
+                            </div>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="location" value="Нічна прогулянка містом 🌙">
+                            <div class="option-content">
+                                <span class="option-icon">🌙</span>
+                                <span class="option-title">Нічна прогулянка</span>
+                            </div>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="location" value="Затишний кіновечір вдома 🎬">
+                            <div class="option-content">
+                                <span class="option-icon">🎬</span>
+                                <span class="option-title">Кіновечір вдома</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="planner-group">
+                    <label class="group-label">2. Що будемо смакувати?</label>
+                    <div class="options-grid">
+                        <label class="option-card">
+                            <input type="radio" name="food" value="Суші сет 🍣" checked>
+                            <div class="option-content">
+                                <span class="option-icon">🍣</span>
+                                <span class="option-title">Суші сет</span>
+                            </div>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="food" value="Піца & десерти 🍕">
+                            <div class="option-content">
+                                <span class="option-icon">🍕</span>
+                                <span class="option-title">Піца & смаколики</span>
+                            </div>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="food" value="Кава & вишукані десерти 🍰">
+                            <div class="option-content">
+                                <span class="option-icon">🍰</span>
+                                <span class="option-title">Кава & десерти</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="button" id="generate-ticket-btn" class="spidey-btn margin-top">
+                    <span>Згенерувати квиток 🎟️</span>
+                </button>
+            </form>
+
+            <!-- Контейнер згенерованого квитка -->
+            <div id="ticket-wrapper" class="hidden">
+                <div id="ticket-result" class="ticket-card">
+                    <div class="ticket-top">
+                        <span class="ticket-tag">OFFICIAL DATE TICKET</span>
+                        <span class="ticket-date">05.10.2026 ✨</span>
+                    </div>
+                    <div class="ticket-divider"></div>
+                    <div class="ticket-body">
+                        <p class="ticket-row"><strong>Для кого:</strong> Діана ❤️</p>
+                        <p class="ticket-row"><strong>Формат:</strong> <span id="res-location">-</span></p>
+                        <p class="ticket-row"><strong>Меню:</strong> <span id="res-food">-</span></p>
+                        <p class="ticket-row"><strong>Дрес-код:</strong> Твоя чарівна посмішка ✨</p>
+                    </div>
+                    <div class="ticket-footer">
+                        <p class="ticket-final-note">Чекаю на наш ідеальний вечір! 💖</p>
+                    </div>
+                </div>
+
+                <div class="ticket-actions">
+                    <button id="download-ticket-btn" class="spidey-btn download-btn">
+                        <span>Зберегти квиток у галерею 📸</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

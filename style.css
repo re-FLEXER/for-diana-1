@@ -15,10 +15,11 @@ body {
     align-items: center;
     overflow-x: hidden;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* ==========================================
-   УПРАВЛІННЯ ЕКРАНАМИ (СТРОГИЙ ЦЕНТР)
+   УПРАВЛІННЯ ЕКРАНАМИ
    ========================================== */
 .screen {
     position: absolute;
@@ -51,6 +52,7 @@ body {
 .lock-card {
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 40px 30px;
     border-radius: 24px;
@@ -210,7 +212,6 @@ body {
     transition: all 0.3s ease;
 }
 
-/* ЛИСТ І ВНУТРІШНІЙ ЗМІСТ */
 .letter {
     position: relative;
     width: 90vw;
@@ -224,12 +225,10 @@ body {
     z-index: 10;
     max-height: 80vh;
     overflow-y: auto;
-    
     opacity: 0;
     transform: translateY(30px) scale(0.95);
     transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     pointer-events: none;
-    
     scrollbar-width: thin;
     scrollbar-color: #e66496 transparent;
 }
@@ -273,7 +272,6 @@ body {
     margin-bottom: 24px;
 }
 
-/* POLAROID-КАРТКА */
 .polaroid-card {
     background: #ffffff;
     padding: 10px 10px 14px 10px;
@@ -283,10 +281,6 @@ body {
     transition: transform 0.3s ease;
     margin-bottom: 22px;
     width: 100%;
-}
-
-.polaroid-card:hover {
-    transform: rotate(0deg) scale(1.02);
 }
 
 .polaroid-img-wrapper {
@@ -312,7 +306,6 @@ body {
     margin-top: 8px;
 }
 
-/* КНОПКА ПЕРЕХОДУ */
 .next-stage-btn {
     position: relative;
     width: 100%;
@@ -332,16 +325,6 @@ body {
     justify-content: center;
 }
 
-.next-stage-btn::after {
-    content: ' 🕸️';
-}
-
-.next-stage-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(230, 100, 150, 0.3);
-}
-
-/* СТАНІ ВІДКРИТТЯ КОНВЕРТА */
 .envelope.open {
     opacity: 0;
     transform: translateY(80px) scale(0.8);
@@ -354,7 +337,6 @@ body {
     pointer-events: all;
 }
 
-/* ФОНОВА АНІМАЦІЯ CANVAS */
 #bg-canvas {
     position: fixed;
     top: 0;
@@ -371,12 +353,378 @@ body {
     opacity: 1;
 }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.15); opacity: 1; }
+/* ==========================================
+   БЛОК 3: SPIDER-MAN СЦЕНА
+   ========================================== */
+#spidey-screen {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% 50%, #200a1a 0%, #0c0512 60%, #030106 100%) !important;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-@keyframes heartBeat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+#spidey-web-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
 }
+
+.spidey-card {
+    position: relative;
+    z-index: 10;
+    background: rgba(14, 10, 22, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 42, 95, 0.4);
+    box-shadow: 0 0 50px rgba(255, 42, 95, 0.25),
+                inset 0 0 20px rgba(255, 42, 95, 0.15);
+    border-radius: 28px;
+    padding: 35px 25px;
+    max-width: 750px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.spidey-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 42, 95, 0.15);
+    border: 1px solid rgba(255, 42, 95, 0.4);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #ff7597;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.spidey-title {
+    font-family: 'Caveat', cursive;
+    font-size: 38px;
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 42, 95, 0.6);
+    margin-bottom: 8px;
+}
+
+.spidey-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: #d1c7dc;
+    font-style: italic;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+.spidey-author {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    font-style: normal;
+    color: #ff2a5f;
+    letter-spacing: 1px;
+}
+
+.video-frame-wrapper {
+    position: relative;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 20px;
+    margin-bottom: 25px;
+}
+
+.video-corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: #ff2a5f;
+    border-style: solid;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.video-corner.top-left { top: 0; left: 0; border-width: 2px 0 0 2px; border-top-left-radius: 6px; }
+.video-corner.top-right { top: 0; right: 0; border-width: 2px 2px 0 0; border-top-right-radius: 6px; }
+.video-corner.bottom-left { bottom: 0; left: 0; border-width: 0 0 2px 2px; border-bottom-left-radius: 6px; }
+.video-corner.bottom-right { bottom: 0; right: 0; border-width: 0 2px 2px 0; border-bottom-right-radius: 6px; }
+
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #05050a;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+#spidey-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(30, 15, 40, 0.95) 0%, rgba(8, 5, 15, 0.98) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 3;
+    transition: opacity 0.5s ease;
+}
+
+.play-glow-btn {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 42, 95, 0.2);
+    border: 2px solid #ff2a5f;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ff2a5f;
+    box-shadow: 0 0 20px rgba(255, 42, 95, 0.5);
+    animation: pulseSpidey 2s infinite ease-in-out;
+}
+
+.play-icon { font-size: 20px; margin-left: 3px; }
+.placeholder-title { font-size: 15px; font-weight: 600; color: #ffffff; }
+
+.spidey-btn {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #ff2a5f 0%, #b81b43 100%);
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(255, 42, 95, 0.3);
+}
+
+.spidey-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255, 42, 95, 0.5);
+}
+
+/* ==========================================
+   БЛОК 4: ПЛАНУВАЛЬНИК ПОБАЧЕННЯ
+   ========================================== */
+#planner-screen {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% 50%, #1a0c1a 0%, #0d0612 70%, #030106 100%) !important;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#planner-bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.planner-card {
+    position: relative;
+    z-index: 10;
+    background: rgba(14, 10, 22, 0.88);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 42, 95, 0.35);
+    box-shadow: 0 0 50px rgba(255, 42, 95, 0.2);
+    border-radius: 28px;
+    padding: 35px 25px;
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.planner-badge {
+    display: inline-block;
+    background: rgba(255, 42, 95, 0.15);
+    border: 1px solid rgba(255, 42, 95, 0.4);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #ff7597;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.planner-title {
+    font-family: 'Caveat', cursive;
+    font-size: 36px;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.planner-subtitle {
+    font-size: 14px;
+    color: #c3b8d4;
+    margin-bottom: 25px;
+}
+
+.planner-group {
+    margin-bottom: 22px;
+    text-align: left;
+}
+
+.group-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ff7597;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.option-card input {
+    display: none;
+}
+
+.option-content {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.option-card input:checked + .option-content {
+    border-color: #ff2a5f;
+    background: rgba(255, 42, 95, 0.18);
+    box-shadow: 0 0 18px rgba(255, 42, 95, 0.4);
+    transform: translateY(-2px);
+}
+
+.option-icon { font-size: 24px; }
+.option-title { font-size: 13px; font-weight: 600; color: #ffffff; }
+
+/* КВИТОК (TICKET) */
+.ticket-card {
+    background: linear-gradient(135deg, #1d1128 0%, #100a18 100%);
+    border: 2px dashed #ff2a5f;
+    border-radius: 20px;
+    padding: 25px 20px;
+    margin-top: 15px;
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.ticket-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ff7597;
+    letter-spacing: 1px;
+}
+
+.ticket-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 15px 0;
+}
+
+.ticket-row {
+    font-size: 15px;
+    color: #e2d9ee;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.ticket-row strong { color: #ff2a5f; }
+
+.ticket-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ticket-final-note {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: #ffffff;
+}
+
+.ticket-actions {
+    margin-top: 20px;
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #e66496 0%, #b84373 100%);
+    box-shadow: 0 8px 20px rgba(230, 100, 150, 0.3);
+}
+
+/* ==========================================
+   АДАПТИВНІСТЬ ДЛЯ СМАРТФОНІВ ТА МАКБУКІВ
+   ========================================== */
+@media (max-width: 600px) {
+    .screen { padding: 12px; }
+    .spidey-card, .planner-card { padding: 22px 16px; border-radius: 20px; }
+    .spidey-title, .planner-title { font-size: 30px; }
+    .spidey-subtitle { font-size: 15px; margin-bottom: 18px; }
+    .video-container { aspect-ratio: 4 / 3; }
+    .play-glow-btn { width: 50px; height: 50px; }
+    .options-grid { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 1024px) {
+    .spidey-card, .planner-card { padding: 40px 45px; }
+    .video-container { aspect-ratio: 16 / 9; }
+}
+
+@keyframes pulseSpidey {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 42, 95, 0.4); }
+    50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(255, 42, 95, 0.8); }
+}
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } }
+@keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
