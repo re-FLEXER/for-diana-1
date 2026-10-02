@@ -778,3 +778,25 @@ body {
 }
 @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } }
 @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+fieldset.planner-group {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 0 22px 0;
+}
+
+/* Прибираємо білу обводку для поля вводу */
+#answer-input:focus,
+#answer-input:focus-visible {
+    outline: none !important;
+    border-color: #e66496 !important;
+    box-shadow: 0 0 15px rgba(230, 100, 150, 0.4) !important;
+}
+
+/* Для інших кнопок за потреби залишаємо стандартний фокус */
+#unlock-btn:focus-visible,
+.next-stage-btn:focus-visible,
+.spidey-btn:focus-visible,
+#download-ticket-btn:focus-visible {
+    outline: none;
+}
