@@ -515,8 +515,16 @@ body {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    z-index: 3;
+    z-index: 10;
+    cursor: pointer;
+    pointer-events: auto;
     transition: opacity 0.5s ease;
+}
+
+.video-placeholder .play-glow-btn,
+.video-placeholder .placeholder-title,
+.video-placeholder .blur-spoiler-bg {
+    pointer-events: none;
 }
 
 .play-glow-btn {

@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const ticketStatus = document.getElementById('ticket-status');
     const webCanvas = document.getElementById('spidey-web-canvas');
     const plannerCanvas = document.getElementById('planner-bg-canvas');
+    const spideyVideo = document.getElementById('spidey-video');
+    const videoPlaceholder = document.getElementById('video-placeholder');
     let webCtx = webCanvas ? webCanvas.getContext('2d') : null;
     let plannerCtx = plannerCanvas ? plannerCanvas.getContext('2d') : null;
 
@@ -53,6 +55,39 @@ document.addEventListener('DOMContentLoaded', () => {
             bgCanvas.classList.toggle('active', shouldShowBg);
         }
     };
+
+    if (spideyVideo && videoPlaceholder) {
+        videoPlaceholder.addEventListener('click', () => {
+            videoPlaceholder.style.pointerEvents = 'none';
+            videoPlaceholder.style.opacity = '0';
+
+            const playPromise = spideyVideo.play();
+            if (playPromise) {
+                playPromise.catch((error) => {
+                    console.warn('Video playback failed; retrying muted.', error);
+                    spideyVideo.controls = true;
+                    spideyVideo.muted = true;
+
+                    const mutedPlayPromise = spideyVideo.play();
+                    if (mutedPlayPromise) {
+                        mutedPlayPromise.catch((mutedError) => {
+                            console.error('Video playback could not be started.', mutedError);
+                        });
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                videoPlaceholder.style.display = 'none';
+            }, 500);
+        });
+
+        spideyVideo.addEventListener('click', () => {
+            if (spideyVideo.muted) {
+                spideyVideo.muted = false;
+            }
+        });
+    }
 
     if (lockForm && answerInput && errorMsg && lockScreen && letterScreen) {
         lockForm.addEventListener('submit', (event) => {
